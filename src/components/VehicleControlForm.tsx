@@ -1,18 +1,26 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
-import { Car, Calendar, Clock, User, MapPin, LogOut } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { 
+  Table, 
+  TableBody, 
+  TableCell, 
+  TableHead, 
+  TableHeader, 
+  TableRow 
+} from '@/components/ui/table';
+import { LogOut, Car, ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface VehicleControlFormProps {
   onLogout: () => void;
+  onBack?: () => void;
 }
 
-const VehicleControlForm = ({ onLogout }: VehicleControlFormProps) => {
+const VehicleControlForm = ({ onLogout, onBack }: VehicleControlFormProps) => {
   const [formData, setFormData] = useState({
     // Dados do Veículo
     marca: '',
@@ -72,27 +80,38 @@ const VehicleControlForm = ({ onLogout }: VehicleControlFormProps) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-4">
-      <div className="max-w-4xl mx-auto space-y-6">
+      <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <Card className="shadow-lg border-0">
-          <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-t-lg">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <Car className="w-6 h-6" />
-                <CardTitle className="text-xl font-bold">Controle de Saída do Veículo</CardTitle>
-              </div>
-              <Button
-                onClick={onLogout}
-                variant="ghost"
+        <div className="flex justify-between items-center mb-6">
+          <div className="flex items-center gap-4">
+            {onBack && (
+              <Button 
+                onClick={onBack}
+                variant="outline"
                 size="sm"
-                className="text-white hover:bg-white/20"
+                className="flex items-center gap-2"
               >
-                <LogOut className="w-4 h-4 mr-2" />
-                Sair
+                <ArrowLeft className="w-4 h-4" />
+                Voltar
               </Button>
+            )}
+            <div className="flex items-center gap-2">
+              <Car className="w-8 h-8 text-blue-600" />
+              <div>
+                <h1 className="text-2xl font-bold text-gray-800">Controle de Saída de Veículos</h1>
+                <p className="text-gray-600">Sistema de Controle Interno</p>
+              </div>
             </div>
-          </CardHeader>
-        </Card>
+          </div>
+          <Button 
+            onClick={onLogout}
+            variant="outline"
+            className="flex items-center gap-2"
+          >
+            <LogOut className="w-4 h-4" />
+            Sair
+          </Button>
+        </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Dados do Veículo */}

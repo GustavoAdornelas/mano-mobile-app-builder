@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import LoginForm from '@/components/LoginForm';
-import VehicleControlForm from '@/components/VehicleControlForm';
+import Dashboard from '@/pages/Dashboard';
 import { toast } from 'sonner';
 
 const Index = () => {
@@ -27,7 +27,7 @@ const Index = () => {
       {!isLoggedIn ? (
         <LoginForm onLogin={handleLogin} />
       ) : (
-        <VehicleControlForm onLogout={handleLogout} />
+        <Dashboard onLogout={handleLogout} />
       )}
     </>
   );
