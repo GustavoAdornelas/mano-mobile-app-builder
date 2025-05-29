@@ -1,11 +1,24 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { User, Phone, IdCard } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import { User, Phone, IdCard, Trash2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 const DriverList = () => {
-  const drivers = [
+  const [drivers, setDrivers] = useState([
     {
       id: 1,
       nome: 'João Silva',
@@ -51,10 +64,16 @@ const DriverList = () => {
       status: 'Em Viagem',
       habilitacao: 'AB'
     }
-  ];
+  ]);
 
   const getStatusColor = (status: string) => {
     return status === 'Ativo' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800';
+  };
+
+  const handleDeleteDriver = (driverId: number) => {
+    const driverToDelete = drivers.find(driver => driver.id === driverId);
+    setDrivers(drivers.filter(driver => driver.id !== driverId));
+    toast.success(`Condutor ${driverToDelete?.nome} (matrícula: ${driverToDelete?.matricula}) foi removido com sucesso!`);
   };
 
   return (
@@ -67,9 +86,40 @@ const DriverList = () => {
                 <User className="w-5 h-5 text-blue-600" />
                 {driver.nome}
               </CardTitle>
-              <Badge className={getStatusColor(driver.status)}>
-                {driver.status}
-              </Badge>
+              <div className="flex items-center gap-2">
+                <Badge className={getStatusColor(driver.status)}>
+                  {driver.status}
+                </Badge>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button 
+                      variant="outline" 
+                      size="icon"
+                      className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Tem certeza que deseja excluir o condutor {driver.nome} (matrícula: {driver.matricula})? 
+                        Esta ação não pode ser desfeita.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                      <AlertDialogAction 
+                        onClick={() => handleDeleteDriver(driver.id)}
+                        className="bg-red-600 hover:bg-red-700"
+                      >
+                        Excluir
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
             </div>
           </CardHeader>
           <CardContent className="space-y-3">
