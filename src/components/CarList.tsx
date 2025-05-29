@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -17,49 +17,61 @@ import {
 import { Car, Fuel, Calendar, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
+const initialCars = [
+  {
+    id: 1,
+    marca: 'Chevrolet',
+    modelo: 'Onix',
+    placa: 'ABC-1234',
+    ano: 2022,
+    cor: 'Branco',
+    status: 'Disponível',
+    hodometro: 15000
+  },
+  {
+    id: 2,
+    marca: 'Volkswagen',
+    modelo: 'Gol',
+    placa: 'DEF-5678',
+    ano: 2021,
+    cor: 'Prata',
+    status: 'Em Uso',
+    hodometro: 22000
+  },
+  {
+    id: 3,
+    marca: 'Fiat',
+    modelo: 'Uno',
+    placa: 'GHI-9012',
+    ano: 2020,
+    cor: 'Azul',
+    status: 'Disponível',
+    hodometro: 35000
+  },
+  {
+    id: 4,
+    marca: 'Ford',
+    modelo: 'Ka',
+    placa: 'JKL-3456',
+    ano: 2023,
+    cor: 'Vermelho',
+    status: 'Em Uso',
+    hodometro: 8000
+  }
+];
+
 const CarList = () => {
-  const [cars, setCars] = useState([
-    {
-      id: 1,
-      marca: 'Chevrolet',
-      modelo: 'Onix',
-      placa: 'ABC-1234',
-      ano: 2022,
-      cor: 'Branco',
-      status: 'Disponível',
-      hodometro: 15000
-    },
-    {
-      id: 2,
-      marca: 'Volkswagen',
-      modelo: 'Gol',
-      placa: 'DEF-5678',
-      ano: 2021,
-      cor: 'Prata',
-      status: 'Em Uso',
-      hodometro: 22000
-    },
-    {
-      id: 3,
-      marca: 'Fiat',
-      modelo: 'Uno',
-      placa: 'GHI-9012',
-      ano: 2020,
-      cor: 'Azul',
-      status: 'Disponível',
-      hodometro: 35000
-    },
-    {
-      id: 4,
-      marca: 'Ford',
-      modelo: 'Ka',
-      placa: 'JKL-3456',
-      ano: 2023,
-      cor: 'Vermelho',
-      status: 'Em Uso',
-      hodometro: 8000
+  const [cars, setCars] = useState([]);
+
+  useEffect(() => {
+    const savedCars = localStorage.getItem('vehicleControlCars');
+    if (savedCars) {
+      setCars(JSON.parse(savedCars));
+    } else {
+      setCars(initialCars);
+      localStorage.setItem('vehicleControlCars', JSON.stringify(initialCars));
     }
-  ]);
+  }, []);
 
   const getStatusColor = (status: string) => {
     return status === 'Disponível' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
@@ -67,7 +79,9 @@ const CarList = () => {
 
   const handleDeleteCar = (carId: number) => {
     const carToDelete = cars.find(car => car.id === carId);
-    setCars(cars.filter(car => car.id !== carId));
+    const updatedCars = cars.filter(car => car.id !== carId);
+    setCars(updatedCars);
+    localStorage.setItem('vehicleControlCars', JSON.stringify(updatedCars));
     toast.success(`Veículo ${carToDelete?.marca} ${carToDelete?.modelo} (${carToDelete?.placa}) foi removido com sucesso!`);
   };
 

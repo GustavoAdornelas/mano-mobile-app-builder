@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -17,54 +17,66 @@ import {
 import { User, Phone, IdCard, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
+const initialDrivers = [
+  {
+    id: 1,
+    nome: 'João Silva',
+    matricula: '12345',
+    telefone: '(11) 99999-9999',
+    setor: 'Administrativo',
+    status: 'Ativo',
+    habilitacao: 'AB'
+  },
+  {
+    id: 2,
+    nome: 'Maria Santos',
+    matricula: '12346',
+    telefone: '(11) 88888-8888',
+    setor: 'Vendas',
+    status: 'Em Viagem',
+    habilitacao: 'B'
+  },
+  {
+    id: 3,
+    nome: 'Pedro Costa',
+    matricula: '12347',
+    telefone: '(11) 77777-7777',
+    setor: 'Operações',
+    status: 'Ativo',
+    habilitacao: 'AB'
+  },
+  {
+    id: 4,
+    nome: 'Ana Oliveira',
+    matricula: '12348',
+    telefone: '(11) 66666-6666',
+    setor: 'RH',
+    status: 'Ativo',
+    habilitacao: 'B'
+  },
+  {
+    id: 5,
+    nome: 'Carlos Ferreira',
+    matricula: '12349',
+    telefone: '(11) 55555-5555',
+    setor: 'TI',
+    status: 'Em Viagem',
+    habilitacao: 'AB'
+  }
+];
+
 const DriverList = () => {
-  const [drivers, setDrivers] = useState([
-    {
-      id: 1,
-      nome: 'João Silva',
-      matricula: '12345',
-      telefone: '(11) 99999-9999',
-      setor: 'Administrativo',
-      status: 'Ativo',
-      habilitacao: 'AB'
-    },
-    {
-      id: 2,
-      nome: 'Maria Santos',
-      matricula: '12346',
-      telefone: '(11) 88888-8888',
-      setor: 'Vendas',
-      status: 'Em Viagem',
-      habilitacao: 'B'
-    },
-    {
-      id: 3,
-      nome: 'Pedro Costa',
-      matricula: '12347',
-      telefone: '(11) 77777-7777',
-      setor: 'Operações',
-      status: 'Ativo',
-      habilitacao: 'AB'
-    },
-    {
-      id: 4,
-      nome: 'Ana Oliveira',
-      matricula: '12348',
-      telefone: '(11) 66666-6666',
-      setor: 'RH',
-      status: 'Ativo',
-      habilitacao: 'B'
-    },
-    {
-      id: 5,
-      nome: 'Carlos Ferreira',
-      matricula: '12349',
-      telefone: '(11) 55555-5555',
-      setor: 'TI',
-      status: 'Em Viagem',
-      habilitacao: 'AB'
+  const [drivers, setDrivers] = useState([]);
+
+  useEffect(() => {
+    const savedDrivers = localStorage.getItem('vehicleControlDrivers');
+    if (savedDrivers) {
+      setDrivers(JSON.parse(savedDrivers));
+    } else {
+      setDrivers(initialDrivers);
+      localStorage.setItem('vehicleControlDrivers', JSON.stringify(initialDrivers));
     }
-  ]);
+  }, []);
 
   const getStatusColor = (status: string) => {
     return status === 'Ativo' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800';
@@ -72,7 +84,9 @@ const DriverList = () => {
 
   const handleDeleteDriver = (driverId: number) => {
     const driverToDelete = drivers.find(driver => driver.id === driverId);
-    setDrivers(drivers.filter(driver => driver.id !== driverId));
+    const updatedDrivers = drivers.filter(driver => driver.id !== driverId);
+    setDrivers(updatedDrivers);
+    localStorage.setItem('vehicleControlDrivers', JSON.stringify(updatedDrivers));
     toast.success(`Condutor ${driverToDelete?.nome} (matrícula: ${driverToDelete?.matricula}) foi removido com sucesso!`);
   };
 
