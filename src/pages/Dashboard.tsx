@@ -3,10 +3,12 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { Car, Users, Plus, LogOut } from 'lucide-react';
+import { Car, Users, Plus, LogOut, UserPlus, CarFront } from 'lucide-react';
 import CarList from '@/components/CarList';
 import DriverList from '@/components/DriverList';
 import VehicleControlForm from '@/components/VehicleControlForm';
+import VehicleForm from '@/components/VehicleForm';
+import DriverForm from '@/components/DriverForm';
 
 interface DashboardProps {
   onLogout: () => void;
@@ -15,12 +17,30 @@ interface DashboardProps {
 const Dashboard = ({ onLogout }: DashboardProps) => {
   const [activeTab, setActiveTab] = useState('vehicles');
   const [showControlForm, setShowControlForm] = useState(false);
+  const [showVehicleForm, setShowVehicleForm] = useState(false);
+  const [showDriverForm, setShowDriverForm] = useState(false);
 
   if (showControlForm) {
     return (
       <VehicleControlForm 
         onLogout={onLogout}
         onBack={() => setShowControlForm(false)}
+      />
+    );
+  }
+
+  if (showVehicleForm) {
+    return (
+      <VehicleForm 
+        onBack={() => setShowVehicleForm(false)}
+      />
+    );
+  }
+
+  if (showDriverForm) {
+    return (
+      <DriverForm 
+        onBack={() => setShowDriverForm(false)}
       />
     );
   }
@@ -83,13 +103,35 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
                 <TabsTrigger value="drivers">Condutores</TabsTrigger>
               </TabsList>
               
-              <Button 
-                onClick={() => setShowControlForm(true)}
-                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Nova Saída
-              </Button>
+              <div className="flex gap-2">
+                {activeTab === 'vehicles' ? (
+                  <Button 
+                    onClick={() => setShowVehicleForm(true)}
+                    variant="outline"
+                    className="bg-white hover:bg-gray-50"
+                  >
+                    <CarFront className="w-4 h-4 mr-2" />
+                    Cadastrar Veículo
+                  </Button>
+                ) : (
+                  <Button 
+                    onClick={() => setShowDriverForm(true)}
+                    variant="outline"
+                    className="bg-white hover:bg-gray-50"
+                  >
+                    <UserPlus className="w-4 h-4 mr-2" />
+                    Cadastrar Condutor
+                  </Button>
+                )}
+                
+                <Button 
+                  onClick={() => setShowControlForm(true)}
+                  className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Nova Saída
+                </Button>
+              </div>
             </div>
 
             <TabsContent value="vehicles" className="mt-6">
