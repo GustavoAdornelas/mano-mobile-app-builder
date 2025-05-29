@@ -1,18 +1,17 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
-} from '@/components/ui/table';
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { LogOut, Car, ArrowLeft, Calendar, Clock, User, MapPin } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -22,13 +21,11 @@ interface VehicleControlFormProps {
 }
 
 const VehicleControlForm = ({ onLogout, onBack }: VehicleControlFormProps) => {
+  const [cars, setCars] = useState([]);
+  const [drivers, setDrivers] = useState([]);
+  const [selectedCar, setSelectedCar] = useState(null);
+  const [selectedDriver, setSelectedDriver] = useState(null);
   const [formData, setFormData] = useState({
-    // Dados do Veículo
-    marca: '',
-    modelo: '',
-    placa: '',
-    mesAno: '',
-    
     // Saída
     dataInicio: '',
     horaInicio: '',
@@ -39,13 +36,21 @@ const VehicleControlForm = ({ onLogout, onBack }: VehicleControlFormProps) => {
     dataTermino: '',
     horaTermino: '',
     hodometroTermino: '',
-    
-    // Condutor
-    nomeLegal: '',
-    matricula: '',
-    rubrica: '',
-    telefone: ''
   });
+
+  useEffect(() => {
+    // Carregar veículos do localStorage
+    const savedCars = localStorage.getItem('vehicleControlCars');
+    if (savedCars) {
+      setCars(JSON.parse(savedCars));
+    }
+
+    // Carregar condutores do localStorage
+    const savedDrivers = localStorage.getItem('vehicleControlDrivers');
+    if (savedDrivers) {
+      setDrivers(JSON.parse(savedDrivers));
+    }
+  }, []);
 
   const handleChange = (field: string, value: string) => {
     setFormData(prev => ({
@@ -54,17 +59,36 @@ const VehicleControlForm = ({ onLogout, onBack }: VehicleControlFormProps) => {
     }));
   };
 
+  const handleCarSelect = (carId: string) => {
+    const car = cars.find(c => c.id === parseInt(carId));
+    setSelectedCar(car);
+  };
+
+  const handleDriverSelect = (driverId: string) => {
+    const driver = drivers.find(d => d.id === parseInt(driverId));
+    setSelectedDriver(driver);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Dados do formulário:', formData);
+    
+    if (!selectedCar || !selectedDriver) {
+      toast.error('Por favor, selecione um veículo e um condutor');
+      return;
+    }
+
+    console.log('Dados do controle:', {
+      veiculo: selectedCar,
+      condutor: selectedDriver,
+      ...formData
+    });
+
     toast.success('Controle de saída registrado com sucesso!');
     
     // Reset form
+    setSelectedCar(null);
+    setSelectedDriver(null);
     setFormData({
-      marca: '',
-      modelo: '',
-      placa: '',
-      mesAno: '',
       dataInicio: '',
       horaInicio: '',
       hodometroInicio: '',
@@ -72,10 +96,6 @@ const VehicleControlForm = ({ onLogout, onBack }: VehicleControlFormProps) => {
       dataTermino: '',
       horaTermino: '',
       hodometroTermino: '',
-      nomeLegal: '',
-      matricula: '',
-      rubrica: '',
-      telefone: ''
     });
   };
 
@@ -115,227 +135,225 @@ const VehicleControlForm = ({ onLogout, onBack }: VehicleControlFormProps) => {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Dados do Veículo */}
-          <Card className="shadow-lg border-0">
-            <CardHeader className="bg-gray-50 border-b">
-              <CardTitle className="text-lg font-semibold text-gray-800 flex items-center">
-                <Car className="w-5 h-5 mr-2 text-blue-600" />
-                Unidade de Lotação do veículo
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-6 space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div>
-                  <Label htmlFor="marca" className="text-sm font-medium text-gray-700">Marca</Label>
-                  <Input
-                    id="marca"
-                    value={formData.marca}
-                    onChange={(e) => handleChange('marca', e.target.value)}
-                    className="mt-1"
-                    placeholder="Ex: Toyota"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="modelo" className="text-sm font-medium text-gray-700">Modelo</Label>
-                  <Input
-                    id="modelo"
-                    value={formData.modelo}
-                    onChange={(e) => handleChange('modelo', e.target.value)}
-                    className="mt-1"
-                    placeholder="Ex: Corolla"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="placa" className="text-sm font-medium text-gray-700">Placa</Label>
-                  <Input
-                    id="placa"
-                    value={formData.placa}
-                    onChange={(e) => handleChange('placa', e.target.value)}
-                    className="mt-1"
-                    placeholder="Ex: ABC-1234"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="mesAno" className="text-sm font-medium text-gray-700">Mês/Ano</Label>
-                  <Input
-                    id="mesAno"
-                    value={formData.mesAno}
-                    onChange={(e) => handleChange('mesAno', e.target.value)}
-                    className="mt-1"
-                    placeholder="Ex: 01/2024"
-                  />
-                </div>
+          {/* Seleção de Veículo e Condutor */}
+          <Tabs defaultValue="vehicle" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="vehicle">Selecionar Veículo</TabsTrigger>
+              <TabsTrigger value="driver" disabled={!selectedCar}>Selecionar Condutor</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="vehicle" className="mt-6">
+              <Card className="shadow-lg border-0">
+                <CardHeader className="bg-blue-50 border-b">
+                  <CardTitle className="text-lg font-semibold text-gray-800 flex items-center">
+                    <Car className="w-5 h-5 mr-2 text-blue-600" />
+                    Selecione o Veículo
+                  </CardTitle>
+                  <CardDescription>
+                    Escolha o veículo que será utilizado na saída
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="p-6">
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="car-select" className="text-sm font-medium text-gray-700">Veículo Disponível</Label>
+                      <Select onValueChange={handleCarSelect}>
+                        <SelectTrigger className="mt-1">
+                          <SelectValue placeholder="Selecione um veículo" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {cars.filter(car => car.status === 'Disponível').map((car) => (
+                            <SelectItem key={car.id} value={car.id.toString()}>
+                              {car.marca} {car.modelo} - {car.placa}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    {selectedCar && (
+                      <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                        <h4 className="font-medium text-gray-800 mb-2">Veículo Selecionado:</h4>
+                        <div className="grid grid-cols-2 gap-2 text-sm">
+                          <div><strong>Marca:</strong> {selectedCar.marca}</div>
+                          <div><strong>Modelo:</strong> {selectedCar.modelo}</div>
+                          <div><strong>Placa:</strong> {selectedCar.placa}</div>
+                          <div><strong>Ano:</strong> {selectedCar.ano}</div>
+                          <div><strong>Cor:</strong> {selectedCar.cor}</div>
+                          <div><strong>Hodômetro:</strong> {selectedCar.hodometro.toLocaleString()} km</div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="driver" className="mt-6">
+              <Card className="shadow-lg border-0">
+                <CardHeader className="bg-green-50 border-b">
+                  <CardTitle className="text-lg font-semibold text-gray-800 flex items-center">
+                    <User className="w-5 h-5 mr-2 text-green-600" />
+                    Selecione o Condutor
+                  </CardTitle>
+                  <CardDescription>
+                    Escolha o condutor responsável pelo veículo
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="p-6">
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="driver-select" className="text-sm font-medium text-gray-700">Condutor Disponível</Label>
+                      <Select onValueChange={handleDriverSelect}>
+                        <SelectTrigger className="mt-1">
+                          <SelectValue placeholder="Selecione um condutor" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {drivers.filter(driver => driver.status === 'Ativo').map((driver) => (
+                            <SelectItem key={driver.id} value={driver.id.toString()}>
+                              {driver.nome} - Matrícula: {driver.matricula}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    {selectedDriver && (
+                      <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                        <h4 className="font-medium text-gray-800 mb-2">Condutor Selecionado:</h4>
+                        <div className="grid grid-cols-2 gap-2 text-sm">
+                          <div><strong>Nome:</strong> {selectedDriver.nome}</div>
+                          <div><strong>Matrícula:</strong> {selectedDriver.matricula}</div>
+                          <div><strong>Telefone:</strong> {selectedDriver.telefone}</div>
+                          <div><strong>Setor:</strong> {selectedDriver.setor}</div>
+                          <div><strong>CNH:</strong> {selectedDriver.habilitacao}</div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+
+          {/* Dados da Saída - só aparecem se veículo e condutor estiverem selecionados */}
+          {selectedCar && selectedDriver && (
+            <>
+              {/* Início e Término */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Início */}
+                <Card className="shadow-lg border-0">
+                  <CardHeader className="bg-green-50 border-b">
+                    <CardTitle className="text-lg font-semibold text-gray-800 flex items-center">
+                      <Calendar className="w-5 h-5 mr-2 text-green-600" />
+                      Início
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-6 space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="dataInicio" className="text-sm font-medium text-gray-700">Data</Label>
+                        <Input
+                          id="dataInicio"
+                          type="date"
+                          value={formData.dataInicio}
+                          onChange={(e) => handleChange('dataInicio', e.target.value)}
+                          className="mt-1"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="horaInicio" className="text-sm font-medium text-gray-700">Hora</Label>
+                        <Input
+                          id="horaInicio"
+                          type="time"
+                          value={formData.horaInicio}
+                          onChange={(e) => handleChange('horaInicio', e.target.value)}
+                          className="mt-1"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <Label htmlFor="hodometroInicio" className="text-sm font-medium text-gray-700">Hodômetro</Label>
+                      <Input
+                        id="hodometroInicio"
+                        value={formData.hodometroInicio}
+                        onChange={(e) => handleChange('hodometroInicio', e.target.value)}
+                        className="mt-1"
+                        placeholder="Ex: 15000"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="lotacaoDestino" className="text-sm font-medium text-gray-700">Lotação/Destino/Finalidade</Label>
+                      <Input
+                        id="lotacaoDestino"
+                        value={formData.lotacaoDestino}
+                        onChange={(e) => handleChange('lotacaoDestino', e.target.value)}
+                        className="mt-1"
+                        placeholder="Descreva o destino ou finalidade"
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Término */}
+                <Card className="shadow-lg border-0">
+                  <CardHeader className="bg-red-50 border-b">
+                    <CardTitle className="text-lg font-semibold text-gray-800 flex items-center">
+                      <Clock className="w-5 h-5 mr-2 text-red-600" />
+                      Término
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-6 space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="dataTermino" className="text-sm font-medium text-gray-700">Data</Label>
+                        <Input
+                          id="dataTermino"
+                          type="date"
+                          value={formData.dataTermino}
+                          onChange={(e) => handleChange('dataTermino', e.target.value)}
+                          className="mt-1"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="horaTermino" className="text-sm font-medium text-gray-700">Hora</Label>
+                        <Input
+                          id="horaTermino"
+                          type="time"
+                          value={formData.horaTermino}
+                          onChange={(e) => handleChange('horaTermino', e.target.value)}
+                          className="mt-1"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <Label htmlFor="hodometroTermino" className="text-sm font-medium text-gray-700">Hodômetro</Label>
+                      <Input
+                        id="hodometroTermino"
+                        value={formData.hodometroTermino}
+                        onChange={(e) => handleChange('hodometroTermino', e.target.value)}
+                        className="mt-1"
+                        placeholder="Ex: 15100"
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
-            </CardContent>
-          </Card>
 
-          {/* Início e Término */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Início */}
-            <Card className="shadow-lg border-0">
-              <CardHeader className="bg-green-50 border-b">
-                <CardTitle className="text-lg font-semibold text-gray-800 flex items-center">
-                  <Calendar className="w-5 h-5 mr-2 text-green-600" />
-                  Início
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-6 space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="dataInicio" className="text-sm font-medium text-gray-700">Data</Label>
-                    <Input
-                      id="dataInicio"
-                      type="date"
-                      value={formData.dataInicio}
-                      onChange={(e) => handleChange('dataInicio', e.target.value)}
-                      className="mt-1"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="horaInicio" className="text-sm font-medium text-gray-700">Hora</Label>
-                    <Input
-                      id="horaInicio"
-                      type="time"
-                      value={formData.horaInicio}
-                      onChange={(e) => handleChange('horaInicio', e.target.value)}
-                      className="mt-1"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <Label htmlFor="hodometroInicio" className="text-sm font-medium text-gray-700">Hodômetro</Label>
-                  <Input
-                    id="hodometroInicio"
-                    value={formData.hodometroInicio}
-                    onChange={(e) => handleChange('hodometroInicio', e.target.value)}
-                    className="mt-1"
-                    placeholder="Ex: 15000"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="lotacaoDestino" className="text-sm font-medium text-gray-700">Lotação/Destino/Finalidade</Label>
-                  <Input
-                    id="lotacaoDestino"
-                    value={formData.lotacaoDestino}
-                    onChange={(e) => handleChange('lotacaoDestino', e.target.value)}
-                    className="mt-1"
-                    placeholder="Descreva o destino ou finalidade"
-                  />
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Término */}
-            <Card className="shadow-lg border-0">
-              <CardHeader className="bg-red-50 border-b">
-                <CardTitle className="text-lg font-semibold text-gray-800 flex items-center">
-                  <Clock className="w-5 h-5 mr-2 text-red-600" />
-                  Término
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-6 space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="dataTermino" className="text-sm font-medium text-gray-700">Data</Label>
-                    <Input
-                      id="dataTermino"
-                      type="date"
-                      value={formData.dataTermino}
-                      onChange={(e) => handleChange('dataTermino', e.target.value)}
-                      className="mt-1"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="horaTermino" className="text-sm font-medium text-gray-700">Hora</Label>
-                    <Input
-                      id="horaTermino"
-                      type="time"
-                      value={formData.horaTermino}
-                      onChange={(e) => handleChange('horaTermino', e.target.value)}
-                      className="mt-1"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <Label htmlFor="hodometroTermino" className="text-sm font-medium text-gray-700">Hodômetro</Label>
-                  <Input
-                    id="hodometroTermino"
-                    value={formData.hodometroTermino}
-                    onChange={(e) => handleChange('hodometroTermino', e.target.value)}
-                    className="mt-1"
-                    placeholder="Ex: 15100"
-                  />
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Condutor */}
-          <Card className="shadow-lg border-0">
-            <CardHeader className="bg-blue-50 border-b">
-              <CardTitle className="text-lg font-semibold text-gray-800 flex items-center">
-                <User className="w-5 h-5 mr-2 text-blue-600" />
-                Condutor
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-6 space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div>
-                  <Label htmlFor="nomeLegal" className="text-sm font-medium text-gray-700">Nome Legal</Label>
-                  <Input
-                    id="nomeLegal"
-                    value={formData.nomeLegal}
-                    onChange={(e) => handleChange('nomeLegal', e.target.value)}
-                    className="mt-1"
-                    placeholder="Nome completo"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="matricula" className="text-sm font-medium text-gray-700">Matrícula</Label>
-                  <Input
-                    id="matricula"
-                    value={formData.matricula}
-                    onChange={(e) => handleChange('matricula', e.target.value)}
-                    className="mt-1"
-                    placeholder="Ex: 123456"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="rubrica" className="text-sm font-medium text-gray-700">Rubrica</Label>
-                  <Input
-                    id="rubrica"
-                    value={formData.rubrica}
-                    onChange={(e) => handleChange('rubrica', e.target.value)}
-                    className="mt-1"
-                    placeholder="Assinatura"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="telefone" className="text-sm font-medium text-gray-700">Telefone</Label>
-                  <Input
-                    id="telefone"
-                    value={formData.telefone}
-                    onChange={(e) => handleChange('telefone', e.target.value)}
-                    className="mt-1"
-                    placeholder="(11) 99999-9999"
-                  />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Submit Button */}
-          <Card className="shadow-lg border-0">
-            <CardContent className="p-6">
-              <Button
-                type="submit"
-                className="w-full h-12 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 transition-all duration-200 font-semibold text-lg"
-              >
-                <MapPin className="w-5 h-5 mr-2" />
-                Registrar Controle de Saída
-              </Button>
-            </CardContent>
-          </Card>
+              {/* Submit Button */}
+              <Card className="shadow-lg border-0">
+                <CardContent className="p-6">
+                  <Button
+                    type="submit"
+                    className="w-full h-12 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 transition-all duration-200 font-semibold text-lg"
+                  >
+                    <MapPin className="w-5 h-5 mr-2" />
+                    Registrar Controle de Saída
+                  </Button>
+                </CardContent>
+              </Card>
+            </>
+          )}
         </form>
       </div>
     </div>
