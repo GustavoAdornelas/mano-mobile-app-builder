@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,7 +13,7 @@ import {
   TableHeader, 
   TableRow 
 } from '@/components/ui/table';
-import { LogOut, Car, ArrowLeft } from 'lucide-react';
+import { LogOut, Car, ArrowLeft, Calendar, Clock, User, MapPin } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface VehicleControlFormProps {
