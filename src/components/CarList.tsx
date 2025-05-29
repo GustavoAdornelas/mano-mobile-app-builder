@@ -1,11 +1,24 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Car, Fuel, Calendar } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import { Car, Fuel, Calendar, Trash2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 const CarList = () => {
-  const cars = [
+  const [cars, setCars] = useState([
     {
       id: 1,
       marca: 'Chevrolet',
@@ -46,10 +59,16 @@ const CarList = () => {
       status: 'Em Uso',
       hodometro: 8000
     }
-  ];
+  ]);
 
   const getStatusColor = (status: string) => {
     return status === 'Disponível' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
+  };
+
+  const handleDeleteCar = (carId: number) => {
+    const carToDelete = cars.find(car => car.id === carId);
+    setCars(cars.filter(car => car.id !== carId));
+    toast.success(`Veículo ${carToDelete?.marca} ${carToDelete?.modelo} (${carToDelete?.placa}) foi removido com sucesso!`);
   };
 
   return (
@@ -62,9 +81,40 @@ const CarList = () => {
                 <Car className="w-5 h-5 text-blue-600" />
                 {car.marca} {car.modelo}
               </CardTitle>
-              <Badge className={getStatusColor(car.status)}>
-                {car.status}
-              </Badge>
+              <div className="flex items-center gap-2">
+                <Badge className={getStatusColor(car.status)}>
+                  {car.status}
+                </Badge>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button 
+                      variant="outline" 
+                      size="icon"
+                      className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Tem certeza que deseja excluir o veículo {car.marca} {car.modelo} (placa: {car.placa})? 
+                        Esta ação não pode ser desfeita.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                      <AlertDialogAction 
+                        onClick={() => handleDeleteCar(car.id)}
+                        className="bg-red-600 hover:bg-red-700"
+                      >
+                        Excluir
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
             </div>
           </CardHeader>
           <CardContent className="space-y-3">
