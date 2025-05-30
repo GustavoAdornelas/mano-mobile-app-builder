@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Plus, LogOut, UserPlus, CarFront, FileText } from 'lucide-react';
@@ -24,6 +23,10 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
       <VehicleControlForm 
         onLogout={onLogout}
         onBack={() => setShowControlForm(false)}
+        onNavigateToReports={() => {
+          setShowControlForm(false);
+          setShowReports(true);
+        }}
       />
     );
   }

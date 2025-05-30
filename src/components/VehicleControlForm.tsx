@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -18,9 +17,10 @@ import { toast } from 'sonner';
 interface VehicleControlFormProps {
   onLogout: () => void;
   onBack?: () => void;
+  onNavigateToReports?: () => void;
 }
 
-const VehicleControlForm = ({ onLogout, onBack }: VehicleControlFormProps) => {
+const VehicleControlForm = ({ onLogout, onBack, onNavigateToReports }: VehicleControlFormProps) => {
   const [cars, setCars] = useState([]);
   const [drivers, setDrivers] = useState([]);
   const [selectedCar, setSelectedCar] = useState(null);
@@ -77,26 +77,39 @@ const VehicleControlForm = ({ onLogout, onBack }: VehicleControlFormProps) => {
       return;
     }
 
-    console.log('Dados do controle:', {
-      veiculo: selectedCar,
-      condutor: selectedDriver,
-      ...formData
-    });
+    // Criar novo registro de saída
+    const newExit = {
+      id: Date.now(),
+      vehicleId: selectedCar.id,
+      driverId: selectedDriver.id,
+      vehicleName: `${selectedCar.marca} ${selectedCar.modelo}`,
+      driverName: selectedDriver.nome,
+      plate: selectedCar.placa,
+      exitDate: formData.dataInicio,
+      exitTime: formData.horaInicio,
+      destination: formData.lotacaoDestino,
+      exitKm: parseInt(formData.hodometroInicio),
+      returnDate: formData.dataTermino || undefined,
+      returnTime: formData.horaTermino || undefined,
+      returnKm: formData.hodometroTermino ? parseInt(formData.hodometroTermino) : undefined,
+    };
+
+    // Salvar no localStorage
+    const existingExits = localStorage.getItem('vehicleControlExits');
+    const exits = existingExits ? JSON.parse(existingExits) : [];
+    exits.push(newExit);
+    localStorage.setItem('vehicleControlExits', JSON.stringify(exits));
+
+    console.log('Dados do controle salvos:', newExit);
 
     toast.success('Controle de saída registrado com sucesso!');
     
-    // Reset form
-    setSelectedCar(null);
-    setSelectedDriver(null);
-    setFormData({
-      dataInicio: '',
-      horaInicio: '',
-      hodometroInicio: '',
-      lotacaoDestino: '',
-      dataTermino: '',
-      horaTermino: '',
-      hodometroTermino: '',
-    });
+    // Redirecionar para relatórios após 1 segundo
+    setTimeout(() => {
+      if (onNavigateToReports) {
+        onNavigateToReports();
+      }
+    }, 1000);
   };
 
   return (
@@ -259,6 +272,7 @@ const VehicleControlForm = ({ onLogout, onBack }: VehicleControlFormProps) => {
                           value={formData.dataInicio}
                           onChange={(e) => handleChange('dataInicio', e.target.value)}
                           className="mt-1"
+                          required
                         />
                       </div>
                       <div>
@@ -269,6 +283,7 @@ const VehicleControlForm = ({ onLogout, onBack }: VehicleControlFormProps) => {
                           value={formData.horaInicio}
                           onChange={(e) => handleChange('horaInicio', e.target.value)}
                           className="mt-1"
+                          required
                         />
                       </div>
                     </div>
@@ -280,6 +295,7 @@ const VehicleControlForm = ({ onLogout, onBack }: VehicleControlFormProps) => {
                         onChange={(e) => handleChange('hodometroInicio', e.target.value)}
                         className="mt-1"
                         placeholder="Ex: 15000"
+                        required
                       />
                     </div>
                     <div>
@@ -290,6 +306,7 @@ const VehicleControlForm = ({ onLogout, onBack }: VehicleControlFormProps) => {
                         onChange={(e) => handleChange('lotacaoDestino', e.target.value)}
                         className="mt-1"
                         placeholder="Descreva o destino ou finalidade"
+                        required
                       />
                     </div>
                   </CardContent>
@@ -300,7 +317,7 @@ const VehicleControlForm = ({ onLogout, onBack }: VehicleControlFormProps) => {
                   <CardHeader className="bg-red-50 border-b">
                     <CardTitle className="text-lg font-semibold text-gray-800 flex items-center">
                       <Clock className="w-5 h-5 mr-2 text-red-600" />
-                      Término
+                      Término (Opcional)
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="p-6 space-y-4">
