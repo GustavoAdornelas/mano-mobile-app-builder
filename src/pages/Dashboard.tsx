@@ -54,24 +54,29 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-      <div className="container mx-auto p-4">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-800">Sistema de Controle de Veículos</h1>
+      <div className="container mx-auto p-3 sm:p-4 max-w-7xl">
+        {/* Header - Mobile optimized */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 gap-3 sm:gap-0">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-800 leading-tight">
+            Sistema de Controle de Veículos
+          </h1>
           <Button 
             onClick={onLogout}
             variant="outline"
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 w-full sm:w-auto"
+            size="sm"
           >
             <LogOut className="w-4 h-4" />
             Sair
           </Button>
         </div>
 
-        <div className="flex justify-end items-center mb-6 gap-2">
+        {/* Action Buttons - Mobile optimized grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 mb-6">
           <Button 
             onClick={() => setShowVehicleForm(true)}
             variant="outline"
-            className="bg-white hover:bg-gray-50"
+            className="bg-white hover:bg-gray-50 h-12 text-sm"
           >
             <CarFront className="w-4 h-4 mr-2" />
             Cadastrar Veículo
@@ -80,7 +85,7 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
           <Button 
             onClick={() => setShowDriverForm(true)}
             variant="outline"
-            className="bg-white hover:bg-gray-50"
+            className="bg-white hover:bg-gray-50 h-12 text-sm"
           >
             <UserPlus className="w-4 h-4 mr-2" />
             Cadastrar Condutor
@@ -89,7 +94,7 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
           <Button 
             onClick={() => setShowReports(true)}
             variant="outline"
-            className="bg-white hover:bg-gray-50"
+            className="bg-white hover:bg-gray-50 h-12 text-sm"
           >
             <FileText className="w-4 h-4 mr-2" />
             Relatórios
@@ -97,21 +102,22 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
           
           <Button 
             onClick={() => setShowControlForm(true)}
-            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 h-12 text-sm"
           >
             <Plus className="w-4 h-4 mr-2" />
             Nova Saída
           </Button>
         </div>
 
-        <div className="space-y-8">
+        {/* Content sections - Mobile optimized spacing */}
+        <div className="space-y-6 sm:space-y-8">
           <div>
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Veículos</h2>
+            <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold text-gray-800 mb-3 sm:mb-4">Veículos</h2>
             <CarList />
           </div>
           
           <div>
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Condutores</h2>
+            <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold text-gray-800 mb-3 sm:mb-4">Condutores</h2>
             <DriverList />
           </div>
         </div>

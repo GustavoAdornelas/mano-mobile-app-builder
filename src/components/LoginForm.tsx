@@ -20,18 +20,18 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-4">
-      <Card className="w-full max-w-md shadow-2xl border-0">
-        <CardHeader className="space-y-2 text-center bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-t-lg">
-          <div className="mx-auto w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mb-2">
-            <LogIn className="w-6 h-6" />
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-3 sm:p-4">
+      <Card className="w-full max-w-sm sm:max-w-md shadow-2xl border-0">
+        <CardHeader className="space-y-2 text-center bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-t-lg p-4 sm:p-6">
+          <div className="mx-auto w-10 h-10 sm:w-12 sm:h-12 bg-white/20 rounded-full flex items-center justify-center mb-2">
+            <LogIn className="w-5 h-5 sm:w-6 sm:h-6" />
           </div>
-          <CardTitle className="text-2xl font-bold">Controle de Veículos</CardTitle>
-          <CardDescription className="text-blue-100">
+          <CardTitle className="text-xl sm:text-2xl font-bold">Controle de Veículos</CardTitle>
+          <CardDescription className="text-blue-100 text-sm sm:text-base">
             Sistema de Controle de Saída de Veículos
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6 p-6">
+        <CardContent className="space-y-6 p-4 sm:p-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="username" className="text-sm font-medium text-gray-700">
@@ -45,7 +45,7 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
                   placeholder="Digite seu usuário"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="pl-10 h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                  className="pl-10 h-11 sm:h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500 text-base"
                   required
                 />
               </div>
@@ -62,14 +62,14 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
                   placeholder="Digite sua senha"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="pl-10 h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                  className="pl-10 h-11 sm:h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500 text-base"
                   required
                 />
               </div>
             </div>
             <Button
               type="submit"
-              className="w-full h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 font-semibold"
+              className="w-full h-11 sm:h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 font-semibold text-base"
             >
               Entrar
             </Button>

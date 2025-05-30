@@ -65,23 +65,28 @@ const Reports = ({ onBack }: ReportsProps) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-      <div className="container mx-auto p-4">
-        <div className="flex justify-between items-center mb-6">
-          <div className="flex items-center gap-4">
+      <div className="container mx-auto p-3 sm:p-4 max-w-7xl">
+        {/* Header - Mobile optimized */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 gap-3">
+          <div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto">
             <Button 
               onClick={onBack}
               variant="outline"
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 px-3 py-2"
+              size="sm"
             >
               <ArrowLeft className="w-4 h-4" />
               Voltar
             </Button>
-            <h1 className="text-3xl font-bold text-gray-800">Relatório de Saídas</h1>
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-800 leading-tight">
+              Relatório de Saídas
+            </h1>
           </div>
           
           <Button 
             onClick={generatePDF}
-            className="flex items-center gap-2 bg-green-600 hover:bg-green-700"
+            className="flex items-center gap-2 bg-green-600 hover:bg-green-700 w-full sm:w-auto"
+            size="sm"
           >
             <Download className="w-4 h-4" />
             Gerar PDF
@@ -92,18 +97,18 @@ const Reports = ({ onBack }: ReportsProps) => {
           <Card>
             <CardContent className="py-8 text-center">
               <Calendar className="w-12 h-12 mx-auto text-gray-400 mb-4" />
-              <p className="text-gray-600">Nenhuma saída registrada ainda.</p>
+              <p className="text-gray-600 text-sm sm:text-base">Nenhuma saída registrada ainda.</p>
             </CardContent>
           </Card>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {Object.entries(groupedExits).map(([month, monthExits]) => (
               <Card key={month}>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 capitalize">
-                    <Calendar className="w-5 h-5 text-blue-600" />
+                <CardHeader className="pb-3 sm:pb-4">
+                  <CardTitle className="flex items-center gap-2 capitalize text-base sm:text-lg">
+                    <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
                     {month}
-                    <span className="text-sm font-normal text-gray-500">
+                    <span className="text-xs sm:text-sm font-normal text-gray-500">
                       ({monthExits.length} saída{monthExits.length !== 1 ? 's' : ''})
                     </span>
                   </CardTitle>
@@ -111,37 +116,37 @@ const Reports = ({ onBack }: ReportsProps) => {
                 <CardContent>
                   <div className="space-y-3">
                     {monthExits.map((exit) => (
-                      <div key={exit.id} className="border rounded-lg p-4 bg-white">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div key={exit.id} className="border rounded-lg p-3 sm:p-4 bg-white">
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4">
                           <div>
-                            <h4 className="font-semibold text-gray-800">
+                            <h4 className="font-semibold text-gray-800 text-sm sm:text-base">
                               {exit.vehicleName} - {exit.plate}
                             </h4>
-                            <p className="text-sm text-gray-600">Condutor: {exit.driverName}</p>
+                            <p className="text-xs sm:text-sm text-gray-600">Condutor: {exit.driverName}</p>
                           </div>
                           
                           <div>
-                            <p className="text-sm"><strong>Saída:</strong> {formatDate(exit.exitDate)} às {exit.exitTime}</p>
-                            <p className="text-sm"><strong>Destino:</strong> {exit.destination}</p>
-                            <p className="text-sm"><strong>Km Saída:</strong> {exit.exitKm.toLocaleString()}</p>
+                            <p className="text-xs sm:text-sm"><strong>Saída:</strong> {formatDate(exit.exitDate)} às {exit.exitTime}</p>
+                            <p className="text-xs sm:text-sm"><strong>Destino:</strong> {exit.destination}</p>
+                            <p className="text-xs sm:text-sm"><strong>Km Saída:</strong> {exit.exitKm.toLocaleString()}</p>
                           </div>
                           
                           <div>
                             {exit.returnDate ? (
                               <>
-                                <p className="text-sm"><strong>Retorno:</strong> {formatDate(exit.returnDate)} às {exit.returnTime}</p>
-                                <p className="text-sm"><strong>Km Retorno:</strong> {exit.returnKm?.toLocaleString()}</p>
-                                <p className="text-sm"><strong>Km Percorridos:</strong> {((exit.returnKm || 0) - exit.exitKm).toLocaleString()}</p>
+                                <p className="text-xs sm:text-sm"><strong>Retorno:</strong> {formatDate(exit.returnDate)} às {exit.returnTime}</p>
+                                <p className="text-xs sm:text-sm"><strong>Km Retorno:</strong> {exit.returnKm?.toLocaleString()}</p>
+                                <p className="text-xs sm:text-sm"><strong>Km Percorridos:</strong> {((exit.returnKm || 0) - exit.exitKm).toLocaleString()}</p>
                               </>
                             ) : (
-                              <p className="text-sm text-orange-600"><strong>Status:</strong> Em andamento</p>
+                              <p className="text-xs sm:text-sm text-orange-600"><strong>Status:</strong> Em andamento</p>
                             )}
                           </div>
                         </div>
                         
                         {exit.observations && (
                           <div className="mt-3 pt-3 border-t">
-                            <p className="text-sm"><strong>Observações:</strong> {exit.observations}</p>
+                            <p className="text-xs sm:text-sm"><strong>Observações:</strong> {exit.observations}</p>
                           </div>
                         )}
                       </div>

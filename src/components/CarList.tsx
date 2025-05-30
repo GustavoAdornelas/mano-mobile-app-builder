@@ -77,38 +77,38 @@ const CarList = () => {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
       {cars.map((car) => (
         <Card key={car.id} className="hover:shadow-lg transition-shadow">
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Car className="w-5 h-5 text-blue-600" />
-                {car.marca} {car.modelo}
+          <CardHeader className="pb-2 sm:pb-3">
+            <div className="flex items-start justify-between gap-2">
+              <CardTitle className="text-base sm:text-lg flex items-center gap-2 flex-1 min-w-0">
+                <Car className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 flex-shrink-0" />
+                <span className="truncate">{car.marca} {car.modelo}</span>
               </CardTitle>
               <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <Button 
                     variant="outline" 
                     size="icon"
-                    className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50"
+                    className="h-7 w-7 sm:h-8 sm:w-8 text-red-600 hover:text-red-700 hover:bg-red-50 flex-shrink-0"
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
                   </Button>
                 </AlertDialogTrigger>
-                <AlertDialogContent>
+                <AlertDialogContent className="max-w-sm mx-auto">
                   <AlertDialogHeader>
-                    <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
-                    <AlertDialogDescription>
+                    <AlertDialogTitle className="text-base">Confirmar exclusão</AlertDialogTitle>
+                    <AlertDialogDescription className="text-sm">
                       Tem certeza que deseja excluir o veículo {car.marca} {car.modelo} (placa: {car.placa})? 
                       Esta ação não pode ser desfeita.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                  <AlertDialogFooter className="flex-col sm:flex-row gap-2">
+                    <AlertDialogCancel className="w-full sm:w-auto">Cancelar</AlertDialogCancel>
                     <AlertDialogAction 
                       onClick={() => handleDeleteCar(car.id)}
-                      className="bg-red-600 hover:bg-red-700"
+                      className="bg-red-600 hover:bg-red-700 w-full sm:w-auto"
                     >
                       Excluir
                     </AlertDialogAction>
@@ -117,25 +117,25 @@ const CarList = () => {
               </AlertDialog>
             </div>
           </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="grid grid-cols-2 gap-2 text-sm">
+          <CardContent className="space-y-2 sm:space-y-3 pt-0">
+            <div className="grid grid-cols-2 gap-2 text-xs sm:text-sm">
               <div>
                 <span className="font-medium text-gray-600">Placa:</span>
-                <p className="font-mono">{car.placa}</p>
+                <p className="font-mono text-xs sm:text-sm">{car.placa}</p>
               </div>
               <div>
                 <span className="font-medium text-gray-600">Cor:</span>
-                <p>{car.cor}</p>
+                <p className="text-xs sm:text-sm">{car.cor}</p>
               </div>
             </div>
             
-            <div className="flex items-center justify-between text-sm">
+            <div className="flex items-center justify-between text-xs sm:text-sm pt-1">
               <div className="flex items-center gap-1">
-                <Calendar className="w-4 h-4 text-gray-500" />
+                <Calendar className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500" />
                 <span>{car.ano}</span>
               </div>
               <div className="flex items-center gap-1">
-                <Fuel className="w-4 h-4 text-gray-500" />
+                <Fuel className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500" />
                 <span>{car.hodometro.toLocaleString()} km</span>
               </div>
             </div>
