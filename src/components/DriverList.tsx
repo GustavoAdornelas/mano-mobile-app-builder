@@ -1,7 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   AlertDialog,
@@ -24,7 +23,6 @@ const initialDrivers = [
     matricula: '12345',
     telefone: '(11) 99999-9999',
     setor: 'Administrativo',
-    status: 'Ativo',
     habilitacao: 'AB'
   },
   {
@@ -33,7 +31,6 @@ const initialDrivers = [
     matricula: '12346',
     telefone: '(11) 88888-8888',
     setor: 'Vendas',
-    status: 'Em Viagem',
     habilitacao: 'B'
   },
   {
@@ -42,7 +39,6 @@ const initialDrivers = [
     matricula: '12347',
     telefone: '(11) 77777-7777',
     setor: 'Operações',
-    status: 'Ativo',
     habilitacao: 'AB'
   },
   {
@@ -51,7 +47,6 @@ const initialDrivers = [
     matricula: '12348',
     telefone: '(11) 66666-6666',
     setor: 'RH',
-    status: 'Ativo',
     habilitacao: 'B'
   },
   {
@@ -60,7 +55,6 @@ const initialDrivers = [
     matricula: '12349',
     telefone: '(11) 55555-5555',
     setor: 'TI',
-    status: 'Em Viagem',
     habilitacao: 'AB'
   }
 ];
@@ -77,10 +71,6 @@ const DriverList = () => {
       localStorage.setItem('vehicleControlDrivers', JSON.stringify(initialDrivers));
     }
   }, []);
-
-  const getStatusColor = (status: string) => {
-    return status === 'Ativo' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800';
-  };
 
   const handleDeleteDriver = (driverId: number) => {
     const driverToDelete = drivers.find(driver => driver.id === driverId);
@@ -100,40 +90,35 @@ const DriverList = () => {
                 <User className="w-5 h-5 text-blue-600" />
                 {driver.nome}
               </CardTitle>
-              <div className="flex items-center gap-2">
-                <Badge className={getStatusColor(driver.status)}>
-                  {driver.status}
-                </Badge>
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button 
-                      variant="outline" 
-                      size="icon"
-                      className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50"
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button 
+                    variant="outline" 
+                    size="icon"
+                    className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Tem certeza que deseja excluir o condutor {driver.nome} (matrícula: {driver.matricula})? 
+                      Esta ação não pode ser desfeita.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    <AlertDialogAction 
+                      onClick={() => handleDeleteDriver(driver.id)}
+                      className="bg-red-600 hover:bg-red-700"
                     >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        Tem certeza que deseja excluir o condutor {driver.nome} (matrícula: {driver.matricula})? 
-                        Esta ação não pode ser desfeita.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                      <AlertDialogAction 
-                        onClick={() => handleDeleteDriver(driver.id)}
-                        className="bg-red-600 hover:bg-red-700"
-                      >
-                        Excluir
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </div>
+                      Excluir
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
           </CardHeader>
           <CardContent className="space-y-3">
