@@ -1,6 +1,5 @@
 
 import React, { useState } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Plus, LogOut, UserPlus, CarFront } from 'lucide-react';
 import CarList from '@/components/CarList';
@@ -14,7 +13,6 @@ interface DashboardProps {
 }
 
 const Dashboard = ({ onLogout }: DashboardProps) => {
-  const [activeTab, setActiveTab] = useState('vehicles');
   const [showControlForm, setShowControlForm] = useState(false);
   const [showVehicleForm, setShowVehicleForm] = useState(false);
   const [showDriverForm, setShowDriverForm] = useState(false);
@@ -59,53 +57,44 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
           </Button>
         </div>
 
-        <div className="flex justify-between items-center mb-4">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <div className="flex justify-between items-center">
-              <TabsList className="grid w-fit grid-cols-2">
-                <TabsTrigger value="vehicles">Veículos</TabsTrigger>
-                <TabsTrigger value="drivers">Condutores</TabsTrigger>
-              </TabsList>
-              
-              <div className="flex gap-2">
-                {activeTab === 'vehicles' ? (
-                  <Button 
-                    onClick={() => setShowVehicleForm(true)}
-                    variant="outline"
-                    className="bg-white hover:bg-gray-50"
-                  >
-                    <CarFront className="w-4 h-4 mr-2" />
-                    Cadastrar Veículo
-                  </Button>
-                ) : (
-                  <Button 
-                    onClick={() => setShowDriverForm(true)}
-                    variant="outline"
-                    className="bg-white hover:bg-gray-50"
-                  >
-                    <UserPlus className="w-4 h-4 mr-2" />
-                    Cadastrar Condutor
-                  </Button>
-                )}
-                
-                <Button 
-                  onClick={() => setShowControlForm(true)}
-                  className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Nova Saída
-                </Button>
-              </div>
-            </div>
+        <div className="flex justify-end items-center mb-6 gap-2">
+          <Button 
+            onClick={() => setShowVehicleForm(true)}
+            variant="outline"
+            className="bg-white hover:bg-gray-50"
+          >
+            <CarFront className="w-4 h-4 mr-2" />
+            Cadastrar Veículo
+          </Button>
+          
+          <Button 
+            onClick={() => setShowDriverForm(true)}
+            variant="outline"
+            className="bg-white hover:bg-gray-50"
+          >
+            <UserPlus className="w-4 h-4 mr-2" />
+            Cadastrar Condutor
+          </Button>
+          
+          <Button 
+            onClick={() => setShowControlForm(true)}
+            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Nova Saída
+          </Button>
+        </div>
 
-            <TabsContent value="vehicles" className="mt-6">
-              <CarList />
-            </TabsContent>
-
-            <TabsContent value="drivers" className="mt-6">
-              <DriverList />
-            </TabsContent>
-          </Tabs>
+        <div className="space-y-8">
+          <div>
+            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Veículos</h2>
+            <CarList />
+          </div>
+          
+          <div>
+            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Condutores</h2>
+            <DriverList />
+          </div>
         </div>
       </div>
     </div>
