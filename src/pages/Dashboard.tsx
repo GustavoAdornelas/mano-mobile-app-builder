@@ -1,12 +1,13 @@
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Plus, LogOut, UserPlus, CarFront } from 'lucide-react';
+import { Plus, LogOut, UserPlus, CarFront, FileText } from 'lucide-react';
 import CarList from '@/components/CarList';
 import DriverList from '@/components/DriverList';
 import VehicleControlForm from '@/components/VehicleControlForm';
 import VehicleForm from '@/components/VehicleForm';
 import DriverForm from '@/components/DriverForm';
+import Reports from '@/pages/Reports';
 
 interface DashboardProps {
   onLogout: () => void;
@@ -16,6 +17,7 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
   const [showControlForm, setShowControlForm] = useState(false);
   const [showVehicleForm, setShowVehicleForm] = useState(false);
   const [showDriverForm, setShowDriverForm] = useState(false);
+  const [showReports, setShowReports] = useState(false);
 
   if (showControlForm) {
     return (
@@ -38,6 +40,14 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
     return (
       <DriverForm 
         onBack={() => setShowDriverForm(false)}
+      />
+    );
+  }
+
+  if (showReports) {
+    return (
+      <Reports 
+        onBack={() => setShowReports(false)}
       />
     );
   }
@@ -74,6 +84,15 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
           >
             <UserPlus className="w-4 h-4 mr-2" />
             Cadastrar Condutor
+          </Button>
+          
+          <Button 
+            onClick={() => setShowReports(true)}
+            variant="outline"
+            className="bg-white hover:bg-gray-50"
+          >
+            <FileText className="w-4 h-4 mr-2" />
+            Relatórios
           </Button>
           
           <Button 
