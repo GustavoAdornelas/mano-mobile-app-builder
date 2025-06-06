@@ -103,12 +103,19 @@ const PDFPreview = ({ isOpen, onClose, groupedExits }: PDFPreviewProps) => {
                       <span>Condutor: {firstExit.driverName}</span>
                     </div>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-1 gap-4 mt-3 text-sm">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3 text-sm">
                     <div className="bg-white p-2 rounded border">
                       <span className="flex items-center justify-center gap-1">
                         <MapPin className="w-4 h-4" />
                         Km Percorridos: {totalKmVehicle.toLocaleString()}
                       </span>
+                    </div>
+                    <div className="bg-white p-2 rounded border">
+                      <div className="text-center">
+                        <p className="font-bold text-xs mb-2">ASSINATURA DO RESPONSÁVEL</p>
+                        <div className="border-b border-gray-400 h-8 mb-1"></div>
+                        <p className="text-xs text-gray-600">Nome: _________________</p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -120,7 +127,7 @@ const PDFPreview = ({ isOpen, onClose, groupedExits }: PDFPreviewProps) => {
                       <TableRow className="bg-gray-100 border-b-2 border-gray-400">
                         <TableHead className="border-r border-gray-300 font-bold text-black text-center w-24">Data Saída</TableHead>
                         <TableHead className="border-r border-gray-300 font-bold text-black text-center w-20">Hora Saída</TableHead>
-                        <TableHead className="border-r border-gray-300 font-bold text-black text-center w-32">Destino</TableHead>
+                        <TableHead className="border-r border-gray-300 font-bold text-black text-center w-40">Destino</TableHead>
                         <TableHead className="border-r border-gray-300 font-bold text-black text-center w-24">Km Saída</TableHead>
                         <TableHead className="border-r border-gray-300 font-bold text-black text-center w-24">Data Retorno</TableHead>
                         <TableHead className="border-r border-gray-300 font-bold text-black text-center w-20">Hora Retorno</TableHead>
@@ -166,22 +173,6 @@ const PDFPreview = ({ isOpen, onClose, groupedExits }: PDFPreviewProps) => {
                       ))}
                     </TableBody>
                   </Table>
-                </div>
-
-                {/* Campo de assinatura */}
-                <div className="border-2 border-gray-300 rounded-lg p-6 bg-gray-50">
-                  <div className="grid grid-cols-1 gap-8">
-                    <div>
-                      <h4 className="font-bold text-sm mb-4 text-center">ASSINATURA DO RESPONSÁVEL</h4>
-                      <div className="border-b-2 border-gray-400 h-16 mb-2"></div>
-                      <p className="text-xs text-center text-gray-600">
-                        Nome: _________________________________
-                      </p>
-                      <p className="text-xs text-center text-gray-600 mt-1">
-                        Data: ___/___/______
-                      </p>
-                    </div>
-                  </div>
                 </div>
 
                 {/* Rodapé do veículo */}
