@@ -103,13 +103,7 @@ const PDFPreview = ({ isOpen, onClose, groupedExits }: PDFPreviewProps) => {
                       <span>Condutor: {firstExit.driverName}</span>
                     </div>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3 text-sm">
-                    <div className="bg-white p-2 rounded border">
-                      <span className="flex items-center justify-center gap-1">
-                        <Calendar className="w-4 h-4" />
-                        Total de Saídas: {vehicleExits.length}
-                      </span>
-                    </div>
+                  <div className="grid grid-cols-1 md:grid-cols-1 gap-4 mt-3 text-sm">
                     <div className="bg-white p-2 rounded border">
                       <span className="flex items-center justify-center gap-1">
                         <MapPin className="w-4 h-4" />
@@ -170,38 +164,15 @@ const PDFPreview = ({ isOpen, onClose, groupedExits }: PDFPreviewProps) => {
                           </TableCell>
                         </TableRow>
                       ))}
-                      
-                      {/* Linha de totais do veículo */}
-                      <TableRow className="bg-gray-200 border-t-2 border-gray-400 font-bold">
-                        <TableCell className="border-r border-gray-300 text-center text-xs" colSpan={6}>
-                          TOTAL DO VEÍCULO: {vehicleExits.length} saída{vehicleExits.length !== 1 ? 's' : ''} registrada{vehicleExits.length !== 1 ? 's' : ''}
-                        </TableCell>
-                        <TableCell className="border-r border-gray-300 text-center text-xs font-bold" colSpan={2}>
-                          {totalKmVehicle.toLocaleString()} km
-                        </TableCell>
-                        <TableCell className="text-center text-xs">
-                          -
-                        </TableCell>
-                      </TableRow>
                     </TableBody>
                   </Table>
                 </div>
 
                 {/* Campo de assinatura */}
                 <div className="border-2 border-gray-300 rounded-lg p-6 bg-gray-50">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="grid grid-cols-1 gap-8">
                     <div>
                       <h4 className="font-bold text-sm mb-4 text-center">ASSINATURA DO RESPONSÁVEL</h4>
-                      <div className="border-b-2 border-gray-400 h-16 mb-2"></div>
-                      <p className="text-xs text-center text-gray-600">
-                        Nome: _________________________________
-                      </p>
-                      <p className="text-xs text-center text-gray-600 mt-1">
-                        Data: ___/___/______
-                      </p>
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-sm mb-4 text-center">VISTO DA CHEFIA</h4>
                       <div className="border-b-2 border-gray-400 h-16 mb-2"></div>
                       <p className="text-xs text-center text-gray-600">
                         Nome: _________________________________
