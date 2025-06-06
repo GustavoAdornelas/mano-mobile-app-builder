@@ -1,8 +1,8 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowLeft, Download, Calendar } from 'lucide-react';
+import PDFPreview from '@/components/PDFPreview';
 import { toast } from 'sonner';
 
 interface ReportsProps {
@@ -29,6 +29,7 @@ interface VehicleExit {
 const Reports = ({ onBack }: ReportsProps) => {
   const [exits, setExits] = useState<VehicleExit[]>([]);
   const [groupedExits, setGroupedExits] = useState<{ [key: string]: VehicleExit[] }>({});
+  const [showPDFPreview, setShowPDFPreview] = useState(false);
 
   useEffect(() => {
     const savedExits = localStorage.getItem('vehicleControlExits');
@@ -59,6 +60,10 @@ const Reports = ({ onBack }: ReportsProps) => {
     console.log('Gerando PDF com dados:', groupedExits);
   };
 
+  const openPDFPreview = () => {
+    setShowPDFPreview(true);
+  };
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('pt-BR');
   };
@@ -84,9 +89,10 @@ const Reports = ({ onBack }: ReportsProps) => {
           </div>
           
           <Button 
-            onClick={generatePDF}
+            onClick={openPDFPreview}
             className="flex items-center gap-2 bg-green-600 hover:bg-green-700 w-full sm:w-auto"
             size="sm"
+            disabled={Object.keys(groupedExits).length === 0}
           >
             <Download className="w-4 h-4" />
             Gerar PDF
@@ -158,6 +164,12 @@ const Reports = ({ onBack }: ReportsProps) => {
           </div>
         )}
       </div>
+
+      <PDFPreview 
+        isOpen={showPDFPreview}
+        onClose={() => setShowPDFPreview(false)}
+        groupedExits={groupedExits}
+      />
     </div>
   );
 };
